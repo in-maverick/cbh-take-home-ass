@@ -16,13 +16,12 @@ jest.mock("crypto", () => {
   };
 });
 
-
 describe("deterministicPartitionKey", () => {
   //if (!event) 0 is string
   //Returns the literal 0 when given no input
   it("Returns the literal 0 when given no input", () => {
     const expectedReturn = deterministicPartitionKey();
-    expect(expectedReturn).toBe("0"); 
+    expect(expectedReturn).toBe("0");
   });
 });
 describe("deterministicPartitionKey", () => {
@@ -47,8 +46,9 @@ describe("deterministicPartitionKey", () => {
   });
 
   it("returns stringified event if event.partitionKey does not exist and stringified event length is less than or equal to 256", () => {
-    const event = { partitionKey: "a".repeat(100) };
-    expect(deterministicPartitionKey(event)).toBe(JSON.stringify(event));
-    expect(crypto.createHash).not.toHaveBeenCalled();
+    const event = "a".repeat(300);
+    //event.length > MAX_PARTITION_KEY_LENGTH=256
+    expect(deterministicPartitionKey(event)).toBe("mockedHash");
+    expect(crypto.createHash).toHaveBeenCalledWith("sha3-512");
   });
 });
